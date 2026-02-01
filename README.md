@@ -48,3 +48,7 @@ sudo ufw allow 3000/tcp
 - **Trackpad**: Swipe to move, tap to click.
 - **Scroll**: Toggle "Scroll Mode" or use two fingers.
 - **Keyboard**: Tap the "Keyboard" button to use your phone's native keyboard.
+
+---
+
+> Contributions are welcome! Please leave a star ⭐ to show your support.
