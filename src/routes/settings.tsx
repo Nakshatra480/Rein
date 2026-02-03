@@ -10,7 +10,7 @@ export const Route = createFileRoute('/settings')({
 function SettingsPage() {
     const [ip, setIp] = useState('');
     const [frontendPort, setFrontendPort] = useState(String(CONFIG.FRONTEND_PORT));
-    const [invertScroll, setInvertScroll] = useState(CONFIG.MOUSE_Y_INVERT);
+    const [invertScroll, setInvertScroll] = useState(CONFIG.MOUSE_INVERT);
     const [qrData, setQrData] = useState('');
 
     // Load initial state
@@ -103,7 +103,7 @@ function SettingsPage() {
 
                 <div className="form-control w-full">
                     <label className="label cursor-pointer">
-                        <span className="label-text font-medium">Invert Scroll (Y-axis)</span>
+                        <span className="label-text font-medium">Invert Scroll</span>
                         <input
                             type="checkbox"
                             className="toggle toggle-primary"
@@ -111,7 +111,7 @@ function SettingsPage() {
                             onChange={(e) => setInvertScroll(e.target.checked)}
                         />
                     </label>
-                    <br />  
+                    <br />
                     <label className="label">
                         <span className="label-text-alt opacity-50">
                             {invertScroll ? 'Traditional scrolling enabled' : 'Natural scrolling'}
@@ -150,7 +150,7 @@ function SettingsPage() {
                                 type: 'update-config',
                                 config: {
                                     frontendPort: parseInt(frontendPort),
-                                    MOUSE_Y_INVERT: invertScroll
+                                    mouseInvert: invertScroll
                                 }
                             }));
 

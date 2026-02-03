@@ -2,5 +2,5 @@
   "host": "0.0.0.0",
   "frontendPort": 3000,
   "address": "rein.local",
-  "MOUSE_Y_INVERT": false
+  "mouseInvert": true
 }

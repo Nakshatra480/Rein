@@ -1,6 +1,6 @@
 import { mouse, Point, Button, keyboard } from '@nut-tree-fork/nut-js';
 import { KEY_MAP } from './KeyMap';
-import serverConfig from '../server-config.json';
+import { CONFIG } from '../config';
 
 export interface InputMessage {
     type: 'move' | 'click' | 'scroll' | 'key' | 'text';
@@ -38,9 +38,9 @@ export class InputHandler {
                 break;
 
             case 'scroll':
-                const invertMultiplier = (serverConfig.MOUSE_Y_INVERT ?? false) ? -1 : 1;
+                const invertMultiplier = (CONFIG.MOUSE_INVERT ?? false) ? -1 : 1;
                 if (msg.dy !== undefined && msg.dy !== 0) await mouse.scrollDown(msg.dy * invertMultiplier);
-                if (msg.dx !== undefined && msg.dx !== 0) await mouse.scrollRight(msg.dx);
+                if (msg.dx !== undefined && msg.dx !== 0) await mouse.scrollRight(msg.dx * -1 * invertMultiplier);
                 break;
 
             case 'key':
