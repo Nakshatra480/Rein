@@ -26,6 +26,10 @@ export const useTrackpadGesture = (
     const dragging = useRef(false);
     const draggingTimeout = useRef<NodeJS.Timeout | null>(null);
 
+    const swiped = useRef(false);
+    const threeFingerStart = useRef<{ x: number, y: number } | null>(null);
+    const SWIPE_THRESHOLD = 50;
+
     // Helpers
     const findTouchIndex = (id: number) => ongoingTouches.current.findIndex(t => t.identifier === id);
 
@@ -60,6 +64,17 @@ export const useTrackpadGesture = (
             } else {
                 ongoingTouches.current[idx] = tracked;
             }
+        }
+
+        if (ongoingTouches.current.length === 3) {
+            swiped.current = false;
+            const t1 = ongoingTouches.current[0];
+            const t2 = ongoingTouches.current[1];
+            const t3 = ongoingTouches.current[2];
+            threeFingerStart.current = {
+                x: (t1.pageX + t2.pageX + t3.pageX) / 3,
+                y: (t1.pageY + t2.pageY + t3.pageY) / 3
+            };
         }
 
         setIsTracking(true);
@@ -118,6 +133,26 @@ export const useTrackpadGesture = (
             tracked.pageY = touch.pageY;
             tracked.timeStamp = e.timeStamp;
         }
+
+        if (ongoingTouches.current.length === 3 && !swiped.current && threeFingerStart.current) {
+            const t1 = ongoingTouches.current[0];
+            const t2 = ongoingTouches.current[1];
+            const t3 = ongoingTouches.current[2];
+            const avgX = (t1.pageX + t2.pageX + t3.pageX) / 3;
+            const avgY = (t1.pageY + t2.pageY + t3.pageY) / 3;
+
+            const dx = avgX - threeFingerStart.current.x;
+            const dy = avgY - threeFingerStart.current.y;
+
+            if (Math.abs(dx) > SWIPE_THRESHOLD) {
+                swiped.current = true;
+                send({ type: 'swipe', direction: dx > 0 ? 'right' : 'left' });
+            } else if (Math.abs(dy) > SWIPE_THRESHOLD) {
+                swiped.current = true;
+                send({ type: 'swipe', direction: dy > 0 ? 'down' : 'up' });
+            }
+        }
+        if (swiped.current) return;
 
         // Send movement if we've moved and not in timeout period
         if (moved.current && e.timeStamp - lastEndTimeStamp.current >= TOUCH_TIMEOUT) {
