@@ -19,9 +19,8 @@ export class InputHandler {
     }
 
     private async pressAndRelease(...keys: Key[]) {
-        await keyboard.pressKey(...keys);
         try {
-            // Ensure keys are released even if something fails after press
+            await keyboard.pressKey(...keys);
         } finally {
             await keyboard.releaseKey(...keys);
         }

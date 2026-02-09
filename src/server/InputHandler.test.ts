@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { InputHandler, InputMessage } from './InputHandler';
 import { keyboard, Key } from '@nut-tree-fork/nut-js';
 
-// Mock nut-js
 vi.mock('@nut-tree-fork/nut-js', () => {
     return {
         keyboard: {
@@ -43,14 +42,12 @@ vi.mock('@nut-tree-fork/nut-js', () => {
     };
 });
 
-// Mock config
 vi.mock('../config', () => ({
     CONFIG: {
         MOUSE_INVERT: false
     }
 }));
 
-// Mock KeyMap
 vi.mock('./KeyMap', () => ({
     KEY_MAP: {}
 }));
@@ -106,7 +103,7 @@ describe('InputHandler Swipe Gestures', () => {
         expect(keyboard.releaseKey).toHaveBeenCalledWith(Key.LeftControl, Key.Up);
     });
 
-    it('should handle swipe down (App Expose) on macOS', async () => {
+    it('should handle swipe down (App Exposé) on macOS', async () => {
         Object.defineProperty(process, 'platform', {
             value: 'darwin'
         });
