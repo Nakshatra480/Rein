@@ -188,6 +188,8 @@ export const useTrackpadGesture = (
         // All fingers lifted
         if (ongoingTouches.current.length === 0 && releasedCount.current >= 1) {
             setIsTracking(false);
+            swiped.current = false;
+            threeFingerStart.current = null;
 
             // Release drag if active
             if (dragging.current) {
