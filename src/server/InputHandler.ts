@@ -18,6 +18,15 @@ export class InputHandler {
         mouse.config.mouseSpeed = 1000;
     }
 
+    private async pressAndRelease(...keys: Key[]) {
+        await keyboard.pressKey(...keys);
+        try {
+            // Ensure keys are released even if something fails after press
+        } finally {
+            await keyboard.releaseKey(...keys);
+        }
+    }
+
     async handleMessage(msg: InputMessage) {
         switch (msg.type) {
             case 'move':
@@ -70,37 +79,34 @@ export class InputHandler {
                     const isMac = process.platform === 'darwin';
                     const isWindows = process.platform === 'win32';
 
+                    if (!isMac && !isWindows) {
+                        console.warn(`Swipe gesture ignored: Unsupported platform '${process.platform}'`);
+                        return;
+                    }
+
                     if (msg.direction === 'left') {
                         if (isMac) {
-                            await keyboard.pressKey(Key.LeftControl, Key.Right);
-                            await keyboard.releaseKey(Key.LeftControl, Key.Right);
+                            await this.pressAndRelease(Key.LeftControl, Key.Right);
                         } else if (isWindows) {
-                            await keyboard.pressKey(Key.LeftControl, Key.LeftSuper, Key.Right);
-                            await keyboard.releaseKey(Key.LeftControl, Key.LeftSuper, Key.Right);
+                            await this.pressAndRelease(Key.LeftControl, Key.LeftSuper, Key.Right);
                         }
                     } else if (msg.direction === 'right') {
                         if (isMac) {
-                            await keyboard.pressKey(Key.LeftControl, Key.Left);
-                            await keyboard.releaseKey(Key.LeftControl, Key.Left);
+                            await this.pressAndRelease(Key.LeftControl, Key.Left);
                         } else if (isWindows) {
-                            await keyboard.pressKey(Key.LeftControl, Key.LeftSuper, Key.Left);
-                            await keyboard.releaseKey(Key.LeftControl, Key.LeftSuper, Key.Left);
+                            await this.pressAndRelease(Key.LeftControl, Key.LeftSuper, Key.Left);
                         }
                     } else if (msg.direction === 'up') {
                         if (isMac) {
-                            await keyboard.pressKey(Key.LeftControl, Key.Up);
-                            await keyboard.releaseKey(Key.LeftControl, Key.Up);
+                            await this.pressAndRelease(Key.LeftControl, Key.Up);
                         } else if (isWindows) {
-                            await keyboard.pressKey(Key.LeftSuper, Key.Tab);
-                            await keyboard.releaseKey(Key.LeftSuper, Key.Tab);
+                            await this.pressAndRelease(Key.LeftSuper, Key.Tab);
                         }
                     } else if (msg.direction === 'down') {
                         if (isMac) {
-                            await keyboard.pressKey(Key.LeftControl, Key.Down);
-                            await keyboard.releaseKey(Key.LeftControl, Key.Down);
+                            await this.pressAndRelease(Key.LeftControl, Key.Down);
                         } else if (isWindows) {
-                            await keyboard.pressKey(Key.LeftSuper, Key.D);
-                            await keyboard.releaseKey(Key.LeftSuper, Key.D);
+                            await this.pressAndRelease(Key.LeftSuper, Key.D);
                         }
                     }
                 }
