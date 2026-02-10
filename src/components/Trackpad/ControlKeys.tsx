@@ -23,27 +23,27 @@ export const ControlKeys: React.FC<ControlKeysProps> = ({
 	};
 
 	return (
-		<div className="bg-base-200 p-2 grid grid-cols-4 gap-2 shrink-0">
+		<div className="bg-base-200 p-1 grid grid-cols-4 gap-1 shrink-0 overflow-hidden">
 			<button
-				className={`btn btn-sm ${scrollMode ? "btn-primary" : "btn-outline"}`}
+				className={`btn btn-sm min-w-0 ${scrollMode ? "btn-primary" : "btn-outline"}`}
 				onPointerDown={(e) => handleInteraction(e, onToggleScroll)}
 			>
 				{scrollMode ? "Scroll" : "Cursor"}
 			</button>
 			<button
-				className="btn btn-sm btn-outline"
+				className="btn btn-sm min-w-0 btn-outline"
 				onPointerDown={(e) => handleInteraction(e, onLeftClick)}
 			>
 				L-Click
 			</button>
 			<button
-				className="btn btn-sm btn-outline"
+				className="btn btn-sm min-w-0 btn-outline"
 				onPointerDown={(e) => handleInteraction(e, onRightClick)}
 			>
 				R-Click
 			</button>
 			<button
-				className={`btn btn-sm ${showKeyboard ? "btn-secondary" : "btn-accent"}`}
+				className={`btn btn-sm min-w-0 ${showKeyboard ? "btn-secondary" : "btn-accent"}`}
 				onPointerDown={(e) => handleInteraction(e, onToggleKeyboard)}
 			>
 				Keyboard
