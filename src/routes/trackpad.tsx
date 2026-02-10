@@ -90,7 +90,9 @@ function TrackpadPage() {
                     ? '1fr auto auto auto'
                     : '1fr auto auto',
             }}
+            role="application"
             onClick={handleContainerClick}
+            onKeyDown={(e) => e.stopPropagation()}
         >
             <div style={{ gridColumn: '1 / -1' }}>
                 <TouchArea
