@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 
 interface MediaKeysProps {
     sendKey: (key: string) => void;
+    isPlaying?: boolean;
 }
 
 const UTILITY_KEYS: { label: string; key: string }[] = [
@@ -27,9 +28,7 @@ const MEDIA_KEYS: { label: string; key: string }[] = [
     { label: "Next", key: "audionext" },
 ];
 
-export const MediaKeys: React.FC<MediaKeysProps> = ({ sendKey }) => {
-    const [isPlaying, setIsPlaying] = useState(false);
-
+export const MediaKeys: React.FC<MediaKeysProps> = ({ sendKey, isPlaying = false }) => {
     const handleInteract = (e: React.PointerEvent, key: string) => {
         e.preventDefault();
         sendKey(key);
@@ -38,7 +37,6 @@ export const MediaKeys: React.FC<MediaKeysProps> = ({ sendKey }) => {
     const handlePlayPause = (e: React.PointerEvent) => {
         e.preventDefault();
         sendKey(isPlaying ? "audiopause" : "audioplay");
-        setIsPlaying((prev) => !prev);
     };
 
     return (

@@ -83,7 +83,6 @@ function TrackpadPage() {
 
     const handleContainerKeyDown = (e: React.KeyboardEvent) => {
         if (e.target === e.currentTarget) {
-            e.preventDefault();
             focusInput();
         }
     };
@@ -127,7 +126,7 @@ function TrackpadPage() {
             </div>
             {showKeyboard && (
                 <div style={{ gridColumn: '1 / -1' }}>
-                    <MediaKeys sendKey={sendKey} />
+                    <MediaKeys sendKey={sendKey} isPlaying={false} />
                 </div>
             )}
             <input
