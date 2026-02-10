@@ -2,8 +2,10 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useState, useRef } from 'react'
 import { useRemoteConnection } from '../hooks/useRemoteConnection';
 import { useTrackpadGesture } from '../hooks/useTrackpadGesture';
-import { ControlBar } from '../components/Trackpad/ControlBar';
-import { ExtraKeys } from '../components/Trackpad/ExtraKeys';
+import { ControlKeys } from '../components/Trackpad/ControlKeys';
+import { ArrowKeys } from '../components/Trackpad/ArrowKeys';
+import { FnKeys } from '../components/Trackpad/FnKeys';
+import { MediaKeys } from '../components/Trackpad/MediaKeys';
 import { TouchArea } from '../components/Trackpad/TouchArea';
 
 export const Route = createFileRoute('/trackpad')({
@@ -12,6 +14,7 @@ export const Route = createFileRoute('/trackpad')({
 
 function TrackpadPage() {
     const [scrollMode, setScrollMode] = useState(false);
+    const [showKeyboard, setShowKeyboard] = useState(false);
     const hiddenInputRef = useRef<HTMLInputElement>(null);
     const isComposingRef = useRef(false);
 
@@ -24,7 +27,6 @@ function TrackpadPage() {
 
     const handleClick = (button: 'left' | 'right') => {
         send({ type: 'click', button, press: true });
-        // Release after short delay to simulate click
         setTimeout(() => send({ type: 'click', button, press: false }), 50);
     };
 
@@ -72,35 +74,53 @@ function TrackpadPage() {
         }
     };
 
+    const handleToggleKeyboard = () => {
+        setShowKeyboard((prev) => !prev);
+        focusInput();
+    };
+
+    const sendKey = (k: string) => send({ type: 'key', key: k });
+
     return (
         <div
-            className="flex flex-col h-full overflow-hidden"
+            className="grid h-full overflow-hidden"
+            style={{
+                gridTemplateColumns: 'repeat(6, 1fr)',
+                gridTemplateRows: showKeyboard
+                    ? '1fr auto auto auto'
+                    : '1fr auto auto',
+            }}
             onClick={handleContainerClick}
         >
-            {/* Touch Surface */}
-            <TouchArea
-                isTracking={isTracking}
-                scrollMode={scrollMode}
-                handlers={handlers}
-                status={status}
-            />
-
-            {/* Controls */}
-            <ControlBar
-                scrollMode={scrollMode}
-                onToggleScroll={() => setScrollMode(!scrollMode)}
-                onLeftClick={() => handleClick('left')}
-                onRightClick={() => handleClick('right')}
-                onKeyboardToggle={focusInput}
-            />
-
-            {/* Extra Keys */}
-            <ExtraKeys
-                sendKey={(k) => send({ type: 'key', key: k })}
-                onInputFocus={focusInput}
-            />
-
-            {/* Hidden Input for Mobile Keyboard */}
+            <div style={{ gridColumn: '1 / -1' }}>
+                <TouchArea
+                    isTracking={isTracking}
+                    scrollMode={scrollMode}
+                    handlers={handlers}
+                    status={status}
+                />
+            </div>
+            <div style={{ gridColumn: '1 / -1' }}>
+                <ControlKeys
+                    scrollMode={scrollMode}
+                    showKeyboard={showKeyboard}
+                    onToggleScroll={() => setScrollMode(!scrollMode)}
+                    onLeftClick={() => handleClick('left')}
+                    onRightClick={() => handleClick('right')}
+                    onToggleKeyboard={handleToggleKeyboard}
+                />
+            </div>
+            <div style={{ gridColumn: '1 / 4' }}>
+                <ArrowKeys sendKey={sendKey} />
+            </div>
+            <div style={{ gridColumn: '4 / -1' }}>
+                <FnKeys sendKey={sendKey} />
+            </div>
+            {showKeyboard && (
+                <div style={{ gridColumn: '1 / -1' }}>
+                    <MediaKeys sendKey={sendKey} />
+                </div>
+            )}
             <input
                 ref={hiddenInputRef}
                 className="opacity-0 absolute bottom-0 pointer-events-none h-0 w-0"
@@ -114,7 +134,7 @@ function TrackpadPage() {
                 autoComplete="off"
                 autoCorrect="off"
                 autoCapitalize="off"
-                autoFocus // Attempt autofocus on mount
+                autoFocus
             />
         </div>
     )

@@ -22,7 +22,7 @@ export const TouchArea: React.FC<TouchAreaProps> = ({ scrollMode, isTracking, ha
 
     return (
         <div
-            className="flex-1 bg-neutral-800 relative touch-none select-none flex items-center justify-center p-4"
+            className="h-full bg-neutral-800 relative touch-none select-none flex items-center justify-center p-4"
             onTouchStart={handleStart}
             onTouchMove={handlers.onTouchMove}
             onTouchEnd={handlers.onTouchEnd}

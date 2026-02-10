@@ -1,19 +1,21 @@
 import React from "react";
 
-interface ControlBarProps {
+interface ControlKeysProps {
 	scrollMode: boolean;
+	showKeyboard: boolean;
 	onToggleScroll: () => void;
 	onLeftClick: () => void;
 	onRightClick: () => void;
-	onKeyboardToggle: () => void;
+	onToggleKeyboard: () => void;
 }
 
-export const ControlBar: React.FC<ControlBarProps> = ({
+export const ControlKeys: React.FC<ControlKeysProps> = ({
 	scrollMode,
+	showKeyboard,
 	onToggleScroll,
 	onLeftClick,
 	onRightClick,
-	onKeyboardToggle,
+	onToggleKeyboard,
 }) => {
 	const handleInteraction = (e: React.PointerEvent, action: () => void) => {
 		e.preventDefault();
@@ -41,8 +43,8 @@ export const ControlBar: React.FC<ControlBarProps> = ({
 				R-Click
 			</button>
 			<button
-				className="btn btn-sm btn-secondary"
-				onPointerDown={(e) => handleInteraction(e, onKeyboardToggle)}
+				className={`btn btn-sm ${showKeyboard ? "btn-secondary" : "btn-accent"}`}
+				onPointerDown={(e) => handleInteraction(e, onToggleKeyboard)}
 			>
 				Keyboard
 			</button>
