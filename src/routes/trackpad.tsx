@@ -81,6 +81,13 @@ function TrackpadPage() {
 
     const sendKey = (k: string) => send({ type: 'key', key: k });
 
+    const handleContainerKeyDown = (e: React.KeyboardEvent) => {
+        if (e.target === e.currentTarget) {
+            e.preventDefault();
+            focusInput();
+        }
+    };
+
     return (
         <div
             className="grid h-full overflow-hidden"
@@ -92,7 +99,7 @@ function TrackpadPage() {
             }}
             role="application"
             onClick={handleContainerClick}
-            onKeyDown={(e) => e.stopPropagation()}
+            onKeyDown={handleContainerKeyDown}
         >
             <div style={{ gridColumn: '1 / -1' }}>
                 <TouchArea
