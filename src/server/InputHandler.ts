@@ -47,16 +47,16 @@ export class InputHandler {
                 }
                 break;
 
-            case 'scroll':
-                const promises: any[] = [];
+            case 'scroll': {
+                const promises: Promise<void>[] = [];
 
                 // Vertical scroll
                 if (typeof msg.dy === 'number' && Math.round(msg.dy) !== 0) {
                     const amount = Math.round(msg.dy);
                     if (amount > 0) {
-                        promises.push(mouse.scrollDown(amount));
+                        promises.push(mouse.scrollDown(amount).then(() => { }));
                     } else {
-                        promises.push(mouse.scrollUp(-amount));
+                        promises.push(mouse.scrollUp(-amount).then(() => { }));
                     }
                 }
 
@@ -64,9 +64,9 @@ export class InputHandler {
                 if (typeof msg.dx === 'number' && Math.round(msg.dx) !== 0) {
                     const amount = Math.round(msg.dx);
                     if (amount > 0) {
-                        promises.push(mouse.scrollRight(amount));
+                        promises.push(mouse.scrollRight(amount).then(() => { }));
                     } else {
-                        promises.push(mouse.scrollLeft(-amount));
+                        promises.push(mouse.scrollLeft(-amount).then(() => { }));
                     }
                 }
 
@@ -74,6 +74,7 @@ export class InputHandler {
                     await Promise.all(promises);
                 }
                 break;
+            }
 
             case 'zoom':
                 if (msg.delta !== undefined && msg.delta !== 0) {
