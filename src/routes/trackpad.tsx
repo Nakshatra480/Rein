@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useState, useRef } from 'react'
 import { useRemoteConnection } from '../hooks/useRemoteConnection';
 import { useTrackpadGesture } from '../hooks/useTrackpadGesture';
+import { useWakeLock } from '../hooks/useWakeLock';
 import { ControlBar } from '../components/Trackpad/ControlBar';
 import { ExtraKeys } from '../components/Trackpad/ExtraKeys';
 import { TouchArea } from '../components/Trackpad/TouchArea';
@@ -33,6 +34,7 @@ function TrackpadPage() {
         return s ? JSON.parse(s) : false;
     });
 
+    useWakeLock();
     const { status, send, sendCombo } = useRemoteConnection();
     // Pass sensitivity and invertScroll to the gesture hook
     const { isTracking, handlers } = useTrackpadGesture(send, scrollMode, sensitivity, invertScroll);
