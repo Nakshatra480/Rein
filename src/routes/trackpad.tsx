@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { useRemoteConnection } from '../hooks/useRemoteConnection';
 import { useTrackpadGesture } from '../hooks/useTrackpadGesture';
 import { ControlBar } from '../components/Trackpad/ControlBar';
@@ -19,21 +20,21 @@ function TrackpadPage() {
     const bufferText = buffer.join(" + ");
     const hiddenInputRef = useRef<HTMLInputElement>(null);
     const isComposingRef = useRef(false);
-    
+
     // Load Client Settings
     const [sensitivity] = useState(() => {
         if (typeof window === 'undefined') return 1.0;
         const s = localStorage.getItem('rein_sensitivity');
         return s ? parseFloat(s) : 1.0;
     });
-    
+
     const [invertScroll] = useState(() => {
         if (typeof window === 'undefined') return false;
         const s = localStorage.getItem('rein_invert');
         return s ? JSON.parse(s) : false;
     });
 
-    const { status, send, sendCombo } = useRemoteConnection();
+    const { status, latency, send, sendCombo } = useRemoteConnection();
     // Pass sensitivity and invertScroll to the gesture hook
     const { isTracking, handlers } = useTrackpadGesture(send, scrollMode, sensitivity, invertScroll);
 
@@ -49,7 +50,7 @@ function TrackpadPage() {
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         const key = e.key.toLowerCase();
-        
+
         if (modifier !== "Release") {
             if (key === 'backspace') {
                 e.preventDefault();
@@ -76,7 +77,7 @@ function TrackpadPage() {
     };
 
     const handleModifierState = () => {
-        switch(modifier){
+        switch (modifier) {
             case "Active":
                 if (buffer.length > 0) {
                     setModifier("Hold");
@@ -97,7 +98,7 @@ function TrackpadPage() {
 
     const handleModifier = (key: string) => {
         console.log(`handleModifier called with key: ${key}, current modifier: ${modifier}, buffer:`, buffer);
-        
+
         if (modifier === "Hold") {
             const comboKeys = [...buffer, key];
             console.log(`Sending combo:`, comboKeys);
@@ -139,7 +140,7 @@ function TrackpadPage() {
             // Don't send text during modifier mode
             if (modifier !== "Release") {
                 handleModifier(val);
-            }else{
+            } else {
                 sendText(val);
             }
             (e.target as HTMLInputElement).value = '';
@@ -153,11 +154,30 @@ function TrackpadPage() {
         }
     };
 
+    const getLatencyColor = (ms: number) => {
+        if (ms < 50) return "text-success";
+        if (ms < 150) return "text-warning";
+        return "text-error";
+    };
+
+    const PingIndicator = () => {
+        if (typeof document === 'undefined') return null;
+        const target = document.getElementById('ping-indicator');
+        if (!target) return null;
+        return createPortal(
+            <span className={`text-xs font-mono ${latency !== null ? getLatencyColor(latency) : "opacity-50"}`}>
+                {latency !== null ? `${latency}ms` : "---"}
+            </span>,
+            target
+        );
+    };
+
     return (
         <div
             className="flex flex-col h-full overflow-hidden"
             onClick={handleContainerClick}
         >
+            <PingIndicator />
             {/* Touch Surface */}
             <TouchArea
                 isTracking={isTracking}

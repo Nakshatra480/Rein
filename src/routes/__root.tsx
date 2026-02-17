@@ -65,7 +65,7 @@ function Navbar() {
       <div className="flex-1">
         <Link to="/trackpad" className="btn btn-ghost text-xl normal-case">Rein</Link>
       </div>
-      <div className="flex-none flex gap-2">
+      <div className="flex-none flex gap-2 items-center">
         <Link
           to="/trackpad"
           className="btn btn-ghost btn-sm"
@@ -80,6 +80,7 @@ function Navbar() {
         >
           Settings
         </Link>
+        <div id="ping-indicator" className="flex items-center" />
       </div>
     </div>
   );
