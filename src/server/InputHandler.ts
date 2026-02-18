@@ -238,30 +238,16 @@ export class InputHandler {
                 break;
 
             case 'clipboard': {
-                const modifier = process.platform === 'darwin' ? Key.LeftSuper : Key.LeftControl;
                 if (msg.action === 'copy') {
-                    const before = await clipboard.getContent();
-                    try {
-                        await keyboard.pressKey(modifier, Key.C);
-                    } finally {
-                        await keyboard.releaseKey(modifier, Key.C);
-                    }
-                    // poll until clipboard changes or ~500ms elapses
-                    for (let i = 0; i < 10; i++) {
-                        await new Promise(r => setTimeout(r, 50));
-                        const content = await clipboard.getContent();
-                        if (content !== before) return content;
-                    }
-                    return before;
+                    return clipboard.getContent();
                 } else if (msg.action === 'paste') {
-                    if (msg.text) {
-                        await clipboard.setContent(msg.text);
+                    const textToPaste = typeof msg.text === 'string' ? msg.text : await clipboard.getContent();
+                    if (!textToPaste) {
+                        return;
                     }
-                    try {
-                        await keyboard.pressKey(modifier, Key.V);
-                    } finally {
-                        await keyboard.releaseKey(modifier, Key.V);
-                    }
+
+                    await clipboard.setContent(textToPaste);
+                    await keyboard.type(textToPaste);
                 }
                 break;
             }
