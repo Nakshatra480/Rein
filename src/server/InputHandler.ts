@@ -40,10 +40,10 @@ export class InputHandler {
             msg.dy = Math.max(-MAX_COORD, Math.min(MAX_COORD, msg.dy));
         }
 
-        // Throttling: Limit high-frequency events to ~60fps (16ms)
+        // Throttling: Limit high-frequency events to ~125fps (8ms)
         if (msg.type === 'move') {
             const now = Date.now();
-            if (now - this.lastMoveTime < 16) {
+            if (now - this.lastMoveTime < 8) {
                 this.pendingMove = msg;
                 if (!this.moveTimer) {
                     this.moveTimer = setTimeout(() => {
@@ -53,14 +53,14 @@ export class InputHandler {
                             this.pendingMove = null;
                             this.handleMessage(pending);
                         }
-                    }, 16);
+                    }, 8);
                 }
                 return;
             }
             this.lastMoveTime = now;
         } else if (msg.type === 'scroll') {
             const now = Date.now();
-            if (now - this.lastScrollTime < 16) {
+            if (now - this.lastScrollTime < 8) {
                 this.pendingScroll = msg;
                 if (!this.scrollTimer) {
                     this.scrollTimer = setTimeout(() => {
@@ -70,7 +70,7 @@ export class InputHandler {
                             this.pendingScroll = null;
                             this.handleMessage(pending);
                         }
-                    }, 16);
+                    }, 8);
                 }
                 return;
             }
