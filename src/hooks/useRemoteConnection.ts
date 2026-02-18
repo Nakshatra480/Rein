@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 
-const fallbackWriteClipboard = (text: string): boolean => {
+const fallbackWriteClipboard = (text: string): void => {
+    let textArea: HTMLTextAreaElement | null = null;
     try {
-        const textArea = document.createElement('textarea');
+        textArea = document.createElement('textarea');
         textArea.value = text;
         textArea.setAttribute('readonly', '');
         textArea.style.position = 'fixed';
@@ -11,11 +12,13 @@ const fallbackWriteClipboard = (text: string): boolean => {
         document.body.appendChild(textArea);
         textArea.focus();
         textArea.select();
-        const copied = document.execCommand('copy');
-        document.body.removeChild(textArea);
-        return copied;
+        document.execCommand('copy');
     } catch {
-        return false;
+        // Browser disallows clipboard writes in this context.
+    } finally {
+        if (textArea && document.body.contains(textArea)) {
+            document.body.removeChild(textArea);
+        }
     }
 };
 

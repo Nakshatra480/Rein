@@ -1,5 +1,4 @@
-import clipboardy from 'clipboardy';
-import { mouse, Point, Button, keyboard, Key } from '@nut-tree-fork/nut-js';
+import { mouse, Point, Button, keyboard, Key, clipboard } from '@nut-tree-fork/nut-js';
 import { KEY_MAP } from './KeyMap';
 
 export interface InputMessage {
@@ -25,7 +24,7 @@ export class InputHandler {
 
     private async readClipboardText(): Promise<string> {
         try {
-            return await clipboardy.read();
+            return await clipboard.getContent();
         } catch (error) {
             console.error('Unable to read clipboard text:', error);
             return '';
@@ -34,7 +33,7 @@ export class InputHandler {
 
     private async writeClipboardText(text: string): Promise<void> {
         try {
-            await clipboardy.write(text);
+            await clipboard.setContent(text);
         } catch (error) {
             console.error('Unable to write clipboard text:', error);
         }
@@ -80,8 +79,8 @@ export class InputHandler {
                             const pending = this.pendingMove;
                             this.pendingMove = null;
                             this.handleMessage(pending).catch((err) => {
-                                console.error('Error processing pending move event:', err);
-                            });
+                                 console.error('Error processing pending move event:', err);
+                             });
                         }
                     }, 8);
                 }
@@ -99,8 +98,8 @@ export class InputHandler {
                             const pending = this.pendingScroll;
                             this.pendingScroll = null;
                             this.handleMessage(pending).catch((err) => {
-                                console.error('Error processing pending move event:', err);
-                            });
+                                 console.error('Error processing pending move event:', err);
+                             });
                         }
                     }, 8);
                 }
@@ -132,8 +131,8 @@ export class InputHandler {
                         msg.button === 'left'
                             ? Button.LEFT
                             : msg.button === 'right'
-                                ? Button.RIGHT
-                                : Button.MIDDLE;
+                            ? Button.RIGHT
+                            : Button.MIDDLE;
 
                     if (msg.press) {
                         await mouse.pressButton(btn);
