@@ -117,7 +117,6 @@ function TrackpadPage() {
     };
 
     const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (isComposingRef.current) return;
         const val = e.target.value;
         if (val) {
             e.target.value = '';
